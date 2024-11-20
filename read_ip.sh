@@ -48,7 +48,7 @@ function main(){
 while [ True ];do
 
 
-    color green "序号  |       主机       | 说明        | 目标路径  "
+    color green "序号  |       主机    |    说明        | 目标路径  "
     underline
     awk 'BEGIN {FS=":"} {printf("\033[0;31m% 3s \033[m | %15s | %15s | %s\n",$1,$2,$6,$7)}' $direc/ip_addrs.txt
     underline
@@ -74,10 +74,10 @@ while [ True ];do
                 
                 # 检查文件是否存在且是文件
                 if [[ -f "$file" ]]; then
-                    echo "文件存在: $file"
+                    color green "文件存在: $file"
                     # 在这里添加你想要对文件进行的操作
                 else
-                    echo "文件不存在或不是一个有效的文件: $file"
+                    color red "文件不存在或不是一个有效的文件: $file"
                     exit
                 fi
 
@@ -86,11 +86,11 @@ while [ True ];do
                 expect -f $direc/scp_script.sh $ipaddr $username $passwd $port $targetPath $file
                 # 检查scp命令是否成功
                 if [ $? -eq 0 ]; then
-                    echo "文件传输成功!"
-                    echo "\n\n\n\n\n"
+                    color green "文件传输成功!"
+                    echo "\n\n"
                 else
-                    echo "文件传输失败!"
-                    echo "\n\n\n\n\n"
+                    color red "文件传输失败!"
+                    echo "\n\n"
                 fi
 
             fi
