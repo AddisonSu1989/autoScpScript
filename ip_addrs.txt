@@ -1,0 +1,4 @@
+0:10.67.93.26:22:yh:123456:WIN-ZZ-CJ:/home/yh/app
+1:10.67.92.27:22:yh:123456:WIN-RG-64:/home/yh/app
+2:10.67.92.108:22:yh:123456:WIN-RG-32:/home/yh/app
+3:172.16.54.129:22:yh:sakura0601:WIN-RG-64-VM:/home/yh/app
