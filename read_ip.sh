@@ -33,22 +33,22 @@ function color(){
 }
 
 function copyright(){
-    color green "#####################"
-    color blue " scp file    "
-    color green "#####################"
+    color blue "#####################"
+    color blue  "###    scp file   ###"
+    color blue "#####################"
 
 }
 
 function underline(){
-    echo "-----------------------------------------"
+    echo "--------------------------------------------------------"
 }
 
 function main(){
 
 while [ True ];do
 
-
-    color green "序号  |       主机    |    说明        | 目标路径  "
+    underline
+    color green "序号  |       主机    |      说明      | 目标路径  "
     underline
     awk 'BEGIN {FS=":"} {printf("\033[0;31m% 3s \033[m | %15s | %15s | %s\n",$1,$2,$6,$7)}' $direc/ip_addrs.txt
     underline
@@ -65,9 +65,11 @@ while [ True ];do
             echo $passwd | grep -q ".pem$"
             RETURN=$?
             if [[ $RETURN == 0 ]];then
-                echo "Input error!!"
+                echo "Input error!!\n\n"
                 # ssh -i $direc/keys/$passwd $username@$ipaddr -p $port
                 # echo "ssh -i $direc/$passwd $username@$ipaddr -p $port"
+            elif [[ $ipaddr == '' ]];then
+                color red  "Input error!! The input number not exist!!  \n\n"
             else
                 # 提示用户输入文件路径
                 read -p "请输入文件路径: " file
@@ -77,8 +79,8 @@ while [ True ];do
                     color green "文件存在: $file"
                     # 在这里添加你想要对文件进行的操作
                 else
-                    color red "文件不存在或不是一个有效的文件: $file"
-                    exit
+                    color red "文件不存在或不是一个有效的文件: $file  \n\n"
+                    continue
                 fi
 
 
@@ -100,7 +102,7 @@ while [ True ];do
         ;;
 
         *)
-            echo "Input error!!"
+            color red "Input error!!\n\n"
         ;;
     esac
 done
