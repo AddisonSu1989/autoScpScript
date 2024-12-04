@@ -5,8 +5,7 @@ set TARGET [lindex $argv 0]
 set USER [lindex $argv 1]
 set PASSWD [lindex $argv 2]
 set PORT [lindex $argv 3]
-set TARGETPATH [lindex $argv 4]
-set SOURCEFILE [lindex $argv 5]
+set SOURCELOG [lindex $argv 4]
 set timeout 30
 
 # echo "$TARGET"
@@ -19,7 +18,7 @@ set timeout 30
 
 
 
-spawn scp "$SOURCEFILE" "$USER@$TARGET:$TARGETPATH"
+spawn scp   "$USER@$TARGET:$SOURCELOG"  ./
 expect {
     "*yes/no" {send "yes\r"; exp_continue}
     "*password:" {send "$PASSWD\r"}

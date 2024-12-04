@@ -52,13 +52,16 @@ while [ True ];do
     underline
     awk 'BEGIN {FS=":"} {printf("\033[0;31m% 3s \033[m | %15s | %15s | %s\n",$1,$2,$6,$7)}' $direc/ip_addrs.txt
     underline
-    read -p '[*] 选择主机: ' number
+    color blue '[*] 选择主机: '
+    read number
+    # read -p '[*] 选择主机: ' number
     pw="$direc/ip_addrs.txt"
     ipaddr=$(awk -v num=$number 'BEGIN {FS=":"} {if($1 == num) {print $2}}' $pw)
     port=$(awk -v num=$number 'BEGIN {FS=":"} {if($1 == num) {print $3}}' $pw)
     username=$(awk -v num=$number 'BEGIN {FS=":"} {if($1 == num) {print $4}}' $pw)
     passwd=$(awk -v num=$number 'BEGIN {FS=":"} {if($1 == num) {print $5}}' $pw)
     targetPath=$(awk -v num=$number 'BEGIN {FS=":"} {if($1 == num) {print $7}}' $pw)
+    machineType=$(awk -v num=$number 'BEGIN {FS=":"} {if($1 == num) {print $6}}' $pw)
 
     case $number in
         [0-9]|[0-9][0-9]|[0-9][0-9][0-9])
@@ -71,23 +74,47 @@ while [ True ];do
             elif [[ $ipaddr == '' ]];then
                 color red  "Input error!! The input number not exist!!  \n\n"
             else
-                # 提示用户输入文件路径
-                read -p "请输入文件路径: " file
-                
-                # 检查文件是否存在且是文件
-                if [[ -f "$file" ]]; then
-                    color green "文件存在: $file"
-                    # 在这里添加你想要对文件进行的操作
-                else
-                    color red "文件不存在或不是一个有效的文件: $file  \n\n"
-                    continue
-                fi
+                color blue '[1] 上传包    [2]拉取日志 '
+                read number # read -p '[1] 上传包;   [2]拉取日志 ' number
+                case $number in 
+                    1)
+                        # 提示用户输入文件路径
+                        read -p "请输入文件路径: " file
+                        
+                        # 检查文件是否存在且是文件
+                        if [[ -f "$file" ]]; then
+                            color green "文件存在: $file"
+                            # 在这里添加你想要对文件进行的操作
+                        else
+                            color red "文件不存在或不是一个有效的文件: $file  \n\n"
+                            continue
+                        fi
+        
+        
+                        # echo "$ipaddr $username $passwd $port $targetPath $file"
+                        expect -f $direc/scp_script.sh $ipaddr $username $passwd $port $targetPath $file
+                        ;;
+                    2)
+                        #组装日志路径
+                        today=$(date +%Y_%m_%d) 
+                        log_file=$today".log"
+                        if echo $machineType  | grep 'RG'; then 
+                            sourceLog=/home/yh/data/yhpos/cache/log/$log_file
+                        else
+    
+                            sourceLog=/home/yh/data/yh_pos_ext/cache/log/$log_file
+                        fi
+                        expect -f $direc/pull_log_script.sh $ipaddr $username $passwd $port $sourceLog $file
+                        ;;
+                    *)
+                        color red  "Input error!! The input number not exist!!  \n\n"
+                        ;;
+                esac
 
 
-                # echo "$ipaddr $username $passwd $port $targetPath $file"
-                expect -f $direc/scp_script.sh $ipaddr $username $passwd $port $targetPath $file
+
                 # 检查scp命令是否成功
-                if [ $? -eq 0 ]; then
+                if [ $? -eq 0  ]; then
                     color green "文件传输成功!"
                     echo "\n\n"
                 else
