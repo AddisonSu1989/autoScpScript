@@ -54,9 +54,17 @@ function check_ip() {
     ping -c 3 -i 1 $ip > /dev/null 2>&1
     return $?
 }
-
+# 定义一个函数来检查并创建目录
+function check_and_create_directory() {
+    local dir=$1
+    if [ ! -d "$dir" ]; then
+        mkdir -p "$dir"
+        color green "目录 $dir 已创建。\n"
+    fi
+}
 
 function main(){
+    # shellcheck disable=SC2078
     while [ True ];do
 
         underline
@@ -116,6 +124,9 @@ function main(){
                             expect -f $direc/scp_script.sh $ipaddr $username $passwd $port $targetPath $file
                             ;;
                         2)
+                            #本地存放日志路径
+                            logPath="./linuxLog"
+                            check_and_create_directory $logPath
                             #组装日志路径
                             today=$(date +%Y_%m_%d)
                             log_file=$today".log"
@@ -125,7 +136,7 @@ function main(){
 
                                 sourceLog=/home/yh/data/yh_pos_ext/cache/log/$log_file
                             fi
-                            expect -f $direc/pull_log_script.sh $ipaddr $username $passwd $port $sourceLog $file
+                            expect -f $direc/pull_log_script.sh $ipaddr $username $passwd $port $sourceLog $logPath
                             ;;
                         *)
                             color red  "Input error: The input number does not exist!!  \n\n"
