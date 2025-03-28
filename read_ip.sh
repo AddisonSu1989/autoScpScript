@@ -136,7 +136,11 @@ function main(){
 
                                 sourceLog=/home/yh/data/yh_pos_ext/cache/log/$log_file
                             fi
-                            expect -f $direc/pull_log_script.sh $ipaddr $username $passwd $port $sourceLog $logPath
+                            targetLogPath=$logPath"/"$today"_"$ipaddr".log"
+                            
+                            expect -f $direc/pull_log_script.sh $ipaddr $username $passwd $port $sourceLog $targetLogPath
+
+                            open $logPath
                             ;;
                         *)
                             color red  "Input error: The input number does not exist!!  \n\n"
